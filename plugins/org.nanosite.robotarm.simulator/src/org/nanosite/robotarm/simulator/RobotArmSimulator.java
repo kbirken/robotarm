@@ -43,7 +43,7 @@ public class RobotArmSimulator extends JFrame {
 	    viewingPlatform.getViewPlatform().setActivationRadius(300f);
 	    final TransformGroup viewTransform = viewingPlatform.getViewPlatformTransform();
 	    Transform3D t3d = new Transform3D();
-	    t3d.lookAt(new Point3d(0,0.5,1.3), new Point3d(0,0,0), new Vector3d(0,1,0));
+	    t3d.lookAt(new Point3d(-1.4,0.3,1.0), new Point3d(0,0,0), new Vector3d(0,1,0));
 	    t3d.invert();
 	    viewTransform.setTransform(t3d);
 
