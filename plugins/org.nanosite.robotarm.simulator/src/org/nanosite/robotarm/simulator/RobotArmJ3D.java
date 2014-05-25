@@ -37,12 +37,14 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	private TransformGroup rotateHumerus = null;
 	private TransformGroup rotateUlna = null;
 	private TransformGroup rotateHand = null;
+	private TransformGroup rotateWrist = null;
 	
 	// the current angles
 	private double angleBase;
 	private double angleHumerus;
 	private double angleUlna;
 	private double angleHand;
+	private double angleWrist;
 	
 	// the simulation time step duration (in milliseconds)
 	private static final int DT = 50;
@@ -58,11 +60,13 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	private double startAngleHumerus;
 	private double startAngleUlna;
 	private double startAngleHand;
+	private double startAngleWrist;
 
 	private double targetAngleBase;
 	private double targetAngleHumerus;
 	private double targetAngleUlna;
 	private double targetAngleHand;
+	private double targetAngleWrist;
 
 	private int i;
 	private int n;
@@ -72,6 +76,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		this.angleHumerus = 0.0f;
 		this.angleUlna = 90.0f;
 		this.angleHand = 45.0f;
+		this.angleWrist = 0.0f;
 
 		// start simulation timer task
 		task = new TimerTask() {
@@ -90,7 +95,8 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 					setAngleBase(startAngleBase + d*(targetAngleBase-startAngleBase));
 					setAngleHumerus(startAngleHumerus+ d*(targetAngleHumerus-startAngleHumerus));
 					setAngleUlna(startAngleUlna+ d*(targetAngleUlna-startAngleUlna));
-					setAngleGripper(startAngleHand+ d*(targetAngleHand-startAngleHand));
+					setAngleHand(startAngleHand+ d*(targetAngleHand-startAngleHand));
+					setAngleWrist(startAngleWrist+ d*(targetAngleWrist-startAngleWrist));
 					
 					if (i>=n)
 						state = STATE.IDLE;
@@ -108,18 +114,18 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		startAngleHumerus= angleHumerus;
 		startAngleUlna= angleUlna;
 		startAngleHand = angleHand;
+		startAngleWrist = angleWrist;
 
 		// positive angles at humerus, ulna and gripper should move robot upwards
 		targetAngleBase = base;
 		targetAngleHumerus= -humerus;
 		targetAngleUlna= 90.0 - ulna;
 		targetAngleHand = -hand;// + 90.0;
+		targetAngleWrist = rot;
 		
 		i = 0;
 		n = t;
 		state = STATE.MOVING;
-
-		// TODO: handle rot
 
 		try {
 			Thread.sleep(t);
@@ -171,10 +177,16 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		setRotateZ(rotateUlna, aDeg);
 	}
 
-	public void setAngleGripper(double aDeg) {
-//		System.out.println("  gripper=" + aDeg);
+	public void setAngleHand(double aDeg) {
+//		System.out.println("  hand=" + aDeg);
 		angleHand = aDeg;
 		setRotateZ(rotateHand, aDeg);
+	}
+
+	public void setAngleWrist(double aDeg) {
+//		System.out.println("  gripper=" + aDeg);
+		angleWrist= aDeg;
+		setRotateY(rotateWrist, aDeg);
 	}
 
 	private static void setRotateY(TransformGroup tg, double aDeg) {
@@ -206,12 +218,12 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		TransformGroup tgHand = new TransformGroup();
 		tgHand.addChild(createAxis(GeometryAL5D.HAND_LENGTH, red));
 
-		/*rotateHand =*/ attachSegment(tgHand, GeometryAL5D.HAND_LENGTH, tgGripper, 0);
+		rotateWrist = attachSegment(tgHand, GeometryAL5D.HAND_LENGTH, tgGripper, angleWrist, 2);
 
 		TransformGroup tgUlna = new TransformGroup();
 		tgUlna.addChild(createAxis(GeometryAL5D.ULNA_LENGTH, white));
 
-		rotateHand = attachSegment(tgUlna, GeometryAL5D.ULNA_LENGTH, tgHand, angleHand);
+		rotateHand = attachSegment(tgUlna, GeometryAL5D.ULNA_LENGTH, tgHand, angleHand, 3);
 
 		TransformGroup tgHumerus = new TransformGroup();
 		tgHumerus.addChild(createAxis(GeometryAL5D.HUMERUS_LENGTH, red));
@@ -223,7 +235,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 //		rotator.setSchedulingBounds(bounds1);
 //		tgCube.addChild(rotator);
 
-		rotateUlna = attachSegment(tgHumerus, GeometryAL5D.HUMERUS_LENGTH, tgUlna, angleUlna);
+		rotateUlna = attachSegment(tgHumerus, GeometryAL5D.HUMERUS_LENGTH, tgUlna, angleUlna, 3);
 		
 //		tgAll.addChild(tgHumerus);
 
@@ -251,7 +263,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		rotateBase.setTransform(tRotate);
 
 		
-		rotateHumerus = attachSegment(rotateBase, GeometryAL5D.BASE_HEIGHT, tgHumerus, angleHumerus);
+		rotateHumerus = attachSegment(rotateBase, GeometryAL5D.BASE_HEIGHT, tgHumerus, angleHumerus, 3);
 		
 		tgBase.addChild(rotateBase);
 		tgAll.addChild(tgBase);
@@ -368,14 +380,20 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	
 	private TransformGroup attachSegment(
 			TransformGroup host, float hostLength,
-			Node segment, double angleDeg
+			Node segment, double angleDeg,
+			int dim
 	) {
 		// pack segment into TransformGroup for rotate
 		TransformGroup tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 
 		Transform3D tRotate = new Transform3D();
-		tRotate.rotZ(Math.toRadians(angleDeg));
+		double angleRad = Math.toRadians(angleDeg);
+		switch (dim) {
+		case 1: tRotate.rotX(angleRad); break;
+		case 2: tRotate.rotY(angleRad); break;
+		case 3: tRotate.rotZ(angleRad); break;
+		}
 		
 		tg.setTransform(tRotate);
 		tg.addChild(segment);
