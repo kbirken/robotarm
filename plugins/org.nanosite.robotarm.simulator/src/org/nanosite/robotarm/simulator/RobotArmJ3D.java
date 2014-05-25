@@ -200,11 +200,13 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	public BranchGroup createSceneGraph() {
 		TransformGroup tgAll = new TransformGroup();
 		
-//		TransformGroup tgGripper = new TransformGroup();
-//		tgGripper.addChild(createAxis(GeometryAL5D.GRIPPER_LENGTH, red));
+		TransformGroup tgGripper = new TransformGroup();
+		tgGripper.addChild(createGripper(777, blue));
 
 		TransformGroup tgHand = new TransformGroup();
 		tgHand.addChild(createAxis(GeometryAL5D.HAND_LENGTH, red));
+
+		/*rotateHand =*/ attachSegment(tgHand, GeometryAL5D.HAND_LENGTH, tgGripper, 0);
 
 		TransformGroup tgUlna = new TransformGroup();
 		tgUlna.addChild(createAxis(GeometryAL5D.ULNA_LENGTH, white));
@@ -305,6 +307,21 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		return tg;
 	}
 	
+	private Node createGripper(float length, Color3f color) {
+		TransformGroup tg = new TransformGroup();
+
+		Appearance ap = new Appearance();
+		ap.setMaterial(new Material(color, black, color, black, 1.0f));
+		   
+		tg.addChild(new Box(10.0f, 1.0f, 20.0f, ap));
+
+//		Transform3D t = new Transform3D();
+//		t.setTranslation(new Vector3f(0.0f, length/2, 0.0f));
+//		tg.setTransform(t);
+
+		return tg;
+	}
+
 	private Node createBase(float width, float height) {
 		TransformGroup tg = new TransformGroup();
 
