@@ -233,7 +233,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		tg2.setTransform(tRotate1);
 		Appearance ap2 = new Appearance();
 		ap2.setMaterial(new Material(red, black, red, black, 1.0f));
-		tg2.addChild(new Cylinder(1.0f, GeometryAL5D.BASE_WIDTH*2.2f, ap2));
+		tg2.addChild(new Cylinder(1.0f, GeometryAL5D.BASE_WIDTH*1.1f, ap2));
 		tgHumerus.addChild(tg2);
 		
 
