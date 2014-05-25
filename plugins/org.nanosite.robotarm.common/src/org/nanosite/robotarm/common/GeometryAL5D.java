@@ -20,8 +20,8 @@ public class GeometryAL5D {
 	// elbow-to-wrist (7.375")
 	public final static float ULNA_LENGTH = 187.325f;
 
-	// gripper, incl. heavy-duty wrist rotate (3.94", wrist to middle of gripper)
-	public final static float GRIPPER_LENGTH = 103.0f;
+	// hand, incl. heavy-duty wrist rotate (3.94", wrist to middle of gripper)
+	public final static float HAND_LENGTH = 103.0f;
 	
 
 	// stepper motor bounds for gripper

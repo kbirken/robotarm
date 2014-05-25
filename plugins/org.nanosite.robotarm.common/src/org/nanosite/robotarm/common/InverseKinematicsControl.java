@@ -58,7 +58,7 @@ public class InverseKinematicsControl implements IRobotArmPosControl {
 		// robot arm geometry
 		double s1 = GeometryAL5D.HUMERUS_LENGTH;
 		double s2 = GeometryAL5D.ULNA_LENGTH;
-		double s3 = GeometryAL5D.GRIPPER_LENGTH;
+		double s3 = GeometryAL5D.HAND_LENGTH;
 
 		if (verbose)
 				System.out.println("ik(x=" + x + ", y=" + y + ", z=" + z + ", aa=" + aa + ", rot=" + rot + ")");

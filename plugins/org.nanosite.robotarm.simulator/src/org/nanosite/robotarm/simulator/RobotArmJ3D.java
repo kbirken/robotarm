@@ -36,13 +36,13 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	private TransformGroup rotateBase = null;
 	private TransformGroup rotateHumerus = null;
 	private TransformGroup rotateUlna = null;
-	private TransformGroup rotateGripper = null;
+	private TransformGroup rotateHand = null;
 	
 	// the current angles
 	private double angleBase;
 	private double angleHumerus;
 	private double angleUlna;
-	private double angleGripper;
+	private double angleHand;
 	
 	// the simulation time step duration (in milliseconds)
 	private static final int DT = 50;
@@ -57,12 +57,12 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	public double startAngleBase;
 	private double startAngleHumerus;
 	private double startAngleUlna;
-	private double startAngleGripper;
+	private double startAngleHand;
 
 	private double targetAngleBase;
 	private double targetAngleHumerus;
 	private double targetAngleUlna;
-	private double targetAngleGripper;
+	private double targetAngleHand;
 
 	private int i;
 	private int n;
@@ -71,7 +71,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 		this.angleBase = 0.0f;
 		this.angleHumerus = 0.0f;
 		this.angleUlna = 90.0f;
-		this.angleGripper = 45.0f;
+		this.angleHand = 45.0f;
 
 		// start simulation timer task
 		task = new TimerTask() {
@@ -90,7 +90,7 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 					setAngleBase(startAngleBase + d*(targetAngleBase-startAngleBase));
 					setAngleHumerus(startAngleHumerus+ d*(targetAngleHumerus-startAngleHumerus));
 					setAngleUlna(startAngleUlna+ d*(targetAngleUlna-startAngleUlna));
-					setAngleGripper(startAngleGripper+ d*(targetAngleGripper-startAngleGripper));
+					setAngleGripper(startAngleHand+ d*(targetAngleHand-startAngleHand));
 					
 					if (i>=n)
 						state = STATE.IDLE;
@@ -102,18 +102,18 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	}
 
 	@Override
-	public boolean move(double base, double humerus, double ulna, double gripper, double rot, int t) {
-		System.out.println("RobotArmJ3D.move(" + base + ", " + humerus + ", " + ulna + ", " + gripper + ")");
+	public boolean move(double base, double humerus, double ulna, double hand, double rot, int t) {
+		System.out.println("RobotArmJ3D.move(" + base + ", " + humerus + ", " + ulna + ", " + hand + ")");
 		startAngleBase = angleBase;
 		startAngleHumerus= angleHumerus;
 		startAngleUlna= angleUlna;
-		startAngleGripper = angleGripper;
+		startAngleHand = angleHand;
 
 		// positive angles at humerus, ulna and gripper should move robot upwards
 		targetAngleBase = base;
 		targetAngleHumerus= -humerus;
 		targetAngleUlna= 90.0 - ulna;
-		targetAngleGripper = -gripper;// + 90.0;
+		targetAngleHand = -hand;// + 90.0;
 		
 		i = 0;
 		n = t;
@@ -173,8 +173,8 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 
 	public void setAngleGripper(double aDeg) {
 //		System.out.println("  gripper=" + aDeg);
-		angleGripper = aDeg;
-		setRotateZ(rotateGripper, aDeg);
+		angleHand = aDeg;
+		setRotateZ(rotateHand, aDeg);
 	}
 
 	private static void setRotateY(TransformGroup tg, double aDeg) {
@@ -200,13 +200,16 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	public BranchGroup createSceneGraph() {
 		TransformGroup tgAll = new TransformGroup();
 		
-		TransformGroup tgGripper = new TransformGroup();
-		tgGripper.addChild(createAxis(GeometryAL5D.GRIPPER_LENGTH, red));
+//		TransformGroup tgGripper = new TransformGroup();
+//		tgGripper.addChild(createAxis(GeometryAL5D.GRIPPER_LENGTH, red));
+
+		TransformGroup tgHand = new TransformGroup();
+		tgHand.addChild(createAxis(GeometryAL5D.HAND_LENGTH, red));
 
 		TransformGroup tgUlna = new TransformGroup();
 		tgUlna.addChild(createAxis(GeometryAL5D.ULNA_LENGTH, white));
 
-		rotateGripper = attachSegment(tgUlna, GeometryAL5D.ULNA_LENGTH, tgGripper, angleGripper);
+		rotateHand = attachSegment(tgUlna, GeometryAL5D.ULNA_LENGTH, tgHand, angleHand);
 
 		TransformGroup tgHumerus = new TransformGroup();
 		tgHumerus.addChild(createAxis(GeometryAL5D.HUMERUS_LENGTH, red));

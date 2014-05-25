@@ -7,5 +7,5 @@ public interface IRobotArmDirectControl extends IRobotArmBaseControl {
 	 * 
 	 * @return true if successful, false on error
 	 */
-	public abstract boolean move(double base, double humerus, double ulna, double gripper, double rot, int t);
+	public abstract boolean move(double base, double humerus, double ulna, double hand, double rot, int t);
 }

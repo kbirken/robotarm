@@ -42,11 +42,11 @@ public class RobotArmPhysical implements IRobotArmDirectControl {
 
 
 	@Override
-	public boolean move(double base, double humerus, double ulna, double gripper, double rot, int t) {
+	public boolean move(double base, double humerus, double ulna, double hand, double rot, int t) {
 		int a = (int)Math.round(base);
 		int b = (int)Math.round(humerus);
 		int c = (int)Math.round(ulna);
-		int d = (int)Math.round(gripper);
+		int d = (int)Math.round(hand);
 		int r = (int)Math.round(rot);
 
 		if (verbose)
