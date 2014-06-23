@@ -30,6 +30,11 @@ public class InverseKinematicsControl implements IRobotArmPosControl {
 	}
 
 	@Override
+	public boolean reset() {
+		return base.reset();
+	}
+
+	@Override
 	public boolean shutdown() {
 		return base.shutdown();
 	}

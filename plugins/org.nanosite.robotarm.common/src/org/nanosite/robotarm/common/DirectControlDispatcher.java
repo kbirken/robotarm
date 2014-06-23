@@ -33,6 +33,16 @@ public class DirectControlDispatcher implements IRobotArmDirectControl {
 	}
 
 	@Override
+	public boolean reset() {
+		boolean ret = true;
+		for(IRobotArmDirectControl c : clients) {
+			if (! c.reset())
+				ret = false;
+		}
+		return ret;
+	}
+
+	@Override
 	public boolean shutdown() {
 		boolean ret = true;
 		for(IRobotArmDirectControl c : clients) {

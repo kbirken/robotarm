@@ -111,6 +111,11 @@ public class RobotArmPhysical implements IRobotArmDirectControl {
 	
 
 	@Override
+	public boolean reset() {
+		return ssc32.reset();
+	}
+
+	@Override
 	public boolean shutdown() {
 		ssc32.shutdown();
 		return true;

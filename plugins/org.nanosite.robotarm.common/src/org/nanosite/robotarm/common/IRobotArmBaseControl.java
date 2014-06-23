@@ -18,9 +18,14 @@ public interface IRobotArmBaseControl {
 	public abstract void delay(int millisec);
 
 	/**
+	 * Move the robot arm to a safe position.
+	 */
+	public abstract boolean reset();
+
+	/**
 	 * Shutdown the robot arm.
 	 * 
-	 *  Usually this will move the arm to a safe position.
+	 *  Usually this will move the arm to a safe position first and then shutdown the hardware.
 	 */
 	public abstract boolean shutdown();
 

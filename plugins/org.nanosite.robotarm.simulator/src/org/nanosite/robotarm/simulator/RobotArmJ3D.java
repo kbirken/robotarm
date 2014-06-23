@@ -152,10 +152,14 @@ public class RobotArmJ3D implements IRobotArmDirectControl {
 	}
 
 	@Override
+	public boolean reset() {
+		delay(2000);
+		return move(0.0, 0.0, 0.0, -45.0, 0.0, 500);
+	}
+
+	@Override
 	public boolean shutdown() {
-		delay(3000);
-		move(0.0, 0.0, 0.0, -45.0, 0.0, 500);
-		return true;
+		return reset();
 	}
 
 
