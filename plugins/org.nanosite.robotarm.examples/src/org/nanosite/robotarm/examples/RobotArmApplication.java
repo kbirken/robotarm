@@ -56,38 +56,46 @@ public class RobotArmApplication {
 	}
 
 	private void calibrate(int step, IRobotArmDirectControl robotDirect) {
+		final int dt = 8000;
+		
 		if (step==0 || step==1) {
-			System.out.println("Calibration step 1: humerus straight up, ulna parallel to ground, hand parallel to ground");
-			robotDirect.move(0, 0, 0, 0, 0, 2000);
-			robotDirect.delay(5000);
+			System.out.println("Calibration step 1: humerus straight up, ulna parallel to ground, hand straight down");
+			robotDirect.move(0, 0, 0, -90, 0, 2000);
+			robotDirect.delay(dt);
 		}
 		
 		if (step==0 || step==2) {
-			System.out.println("Calibration step 2: humerus 45\" backwards");
-			robotDirect.move(0, 45, 0, 0, 0, 2000);
-			robotDirect.delay(5000);
+			System.out.println("Calibration step 2: humerus 45\" backwards, ulna parallel to ground, hand straight down");
+			robotDirect.move(0, 45, -45, -90, 0, 2000);
+			robotDirect.delay(dt);
 		}
 
 		if (step==0 || step==3) {
-			System.out.println("Calibration step 3: humerus straight up, ulna straight up, hand straight up");
-			robotDirect.move(0, 0, 90, 0, 0, 2000);
-			robotDirect.delay(5000);
+			System.out.println("Calibration step 3: humerus 30\" backwards, ulna parallel to ground, hand straight down");
+			robotDirect.move(0, 30, -30, -90, 0, 2000);
+			robotDirect.delay(dt);
 		}
+
 		if (step==0 || step==4) {
-			System.out.println("Calibration step 4: repeat 1");
-			robotDirect.move(0, 0, 0, 0, 0, 2000);
-			robotDirect.delay(5000);
+			System.out.println("Calibration step 4: humerus straight up, ulna straight up, hand straight up");
+			robotDirect.move(0, 0, 90, 0, 0, 2000);
+			robotDirect.delay(dt);
 		}
 		if (step==0 || step==5) {
-			System.out.println("Calibration step 5: humerus straight up, ulna parallel to ground, hand straight up");
-			robotDirect.move(0, 0, 0, -90, 0, 2000);
-			robotDirect.delay(5000);
+			System.out.println("Calibration step 5: repeat 1");
+			robotDirect.move(0, 0, 0, 0, 0, 2000);
+			robotDirect.delay(dt);
+		}
+		if (step==0 || step==6) {
+			System.out.println("Calibration step 6: humerus straight up, ulna parallel to ground, hand straight up");
+			robotDirect.move(0, 0, 0, 90, 0, 2000);
+			robotDirect.delay(dt);
 		}
 		if (step==0 || step==6) {
 			System.out.println("Calibration step 6: base turn 90 DEG anti-clockwise, " +
 					"humerus straight up, ulna parallel to ground, hand straight down");
 			robotDirect.move(90, 0, 0, -90, 0, 2000);
-			robotDirect.delay(5000);
+			robotDirect.delay(dt);
 		}	
 	}
 
