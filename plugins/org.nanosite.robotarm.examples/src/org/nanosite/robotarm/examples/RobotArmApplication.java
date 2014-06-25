@@ -91,6 +91,52 @@ public class RobotArmApplication {
 		}	
 	}
 
+	private void test1(IRobotArmDirectControl robotDirect) {
+		robotDirect.move(0, 0, 0, -90, 0, 2000);
+
+		final int dt = 5000;
+		for(int i=-45; i<=30; i+=15) {
+			robotDirect.move(0, i, -i, -90, 0, 500);
+			robotDirect.delay(dt);
+		}
+		for(int i=45; i>=-45; i-=15) {
+			robotDirect.move(0, i, -i, -90, 0, 500);
+			robotDirect.delay(dt);
+		}	
+	}
+
+	private void test2(IRobotArmDirectControl robotDirect) {
+		final int dt = 5000;
+
+		robotDirect.move(0, 20, 70, -90, 0, 2000);
+		robotDirect.delay(dt);
+
+		for(int i=45; i>=-30; i-=15) {
+			robotDirect.move(0, 0, i, -i, 0, 500);
+			robotDirect.delay(dt);
+		}
+		for(int i=-45; i<=30; i+=15) {
+			robotDirect.move(0, 0, i, -i, 0, 500);
+			robotDirect.delay(dt);
+		}
+	}
+
+	// use this to calibrate the wrist rotate
+	private void test3(IRobotArmDirectControl robotDirect) {
+		final int dt = 5000;
+
+		robotDirect.move(0, 20, 70, -90, 0, 2000);
+		robotDirect.delay(dt);
+
+		for(int i=45; i>=-90; i-=45) {
+			robotDirect.move(0, 45, 0, i, 0, 500);
+			robotDirect.delay(dt);
+		}
+		for(int i=-45; i<=45; i+=45) {
+			robotDirect.move(0, 45, 0, i, 0, 500);
+			robotDirect.delay(dt);
+		}
+	}
 	
 }
 
