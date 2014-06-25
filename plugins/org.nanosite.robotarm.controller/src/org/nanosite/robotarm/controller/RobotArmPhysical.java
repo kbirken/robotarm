@@ -43,14 +43,13 @@ public class RobotArmPhysical implements IRobotArmDirectControl {
 
 	@Override
 	public boolean move(double base, double humerus, double ulna, double hand, double rot, int t) {
-		int a = (int)Math.round(base);
-		int b = (int)Math.round(humerus);
-		int c = (int)Math.round(ulna);
-		int d = (int)Math.round(hand);
-		int r = (int)Math.round(rot);
+		double a = base;
+		double b = humerus;
+		double c = ulna;
+		double d = hand;
 
 		if (verbose)
-			System.out.println("move(" + a + ", " + b + ", " + c + ", " + d + ", " + r + ")");
+			System.out.format("move(%5.1f, %5.1f, %5.1f, %5.1f, %5.1f)\n", a, b, c, d, rot);
 
 		// some basic geometric checks
 		if (b+c < -50) {
@@ -63,7 +62,7 @@ public class RobotArmPhysical implements IRobotArmDirectControl {
 		d = -d;
 		
 		// rot is moving anti-clockwise
-		r = -r;
+		double r = -rot;
 
 		// to calibrate these numbers, use the calibration section in RobotArmApplication
 		double ch0f = 455.0 / 45.0;
