@@ -45,13 +45,13 @@ public class RobotArmApplication {
 //		Calibrator ctrl = new Calibrator(robot);
 //		DominoTurm ctrl = new DominoTurm(robot);
 //		SelfProgrammer ctrl = new SelfProgrammer(robot);
-		ShowcaseGENIVI ctrl = new ShowcaseGENIVI(robot);
+//		ShowcaseGENIVI ctrl = new ShowcaseGENIVI(robot);
+		CubeTower ctrl = new CubeTower(robot);
 //		PlaymobilStopMotion ctrl = new PlaymobilStopMotion(robot);
 		ctrl.run();
 
 		robot.shutdown();
 		
-
 		System.out.println("RobotArmController finished.");
 	}
 
