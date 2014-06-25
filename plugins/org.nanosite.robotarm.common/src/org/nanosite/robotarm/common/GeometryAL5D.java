@@ -9,7 +9,7 @@ public class GeometryAL5D {
 
 	// base
 	public final static float BASE_WIDTH = 93.0f;
-	public final static float BASE_HEIGHT = 67.31f;
+	public final static float BASE_HEIGHT = 70.0f;
 
 	// common width for all arm segments
 	public final static float SEGMENT_WIDTH = 14.0f;

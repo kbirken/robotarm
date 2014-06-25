@@ -68,18 +68,18 @@ public class RobotArmPhysical implements IRobotArmDirectControl {
 		// to calibrate these numbers, use the calibration section in RobotArmApplication
 		double ch0f = 455.0 / 45.0;
 		double ch1f = 345.0 / 45.0;
-		double ch2f = 390.0 / 45.0;
-		double ch3f = 460.0 / 45.0;
+		double ch2f = 480.0 / 45.0;
+		double ch3f = 470.0 / 45.0;
 		double ch5f = 480.0 / 45.0;
 
 		int ch0 = (int)round(1500.0 - a*ch0f);
 		int ch1 = (int)round(1490.0 - b*ch1f);
-		int ch2 = (int)round(1420.0 - c*ch2f);
+		int ch2 = (int)round(1455.0 - c*ch2f);
 		int ch3 = (int)round(1600.0 - d*ch3f);
 		int ch5 = (int)round(1475.0 - r*ch5f);
 		checkRange(0, 800, 2200, ch0);
-		checkRange(1, 900, 2100, ch1);
-		checkRange(2, 900, 2100, ch2);
+		checkRange(1, 850, 2100, ch1);
+		checkRange(2, 820, 2100, ch2);
 		checkRange(3, 500, 2500, ch3);
 		checkRange(5, 500, 2500, ch5);
 
