@@ -1,11 +1,14 @@
 package org.nanosite.robotarm.examples;
 
-import org.nanosite.robotarm.common.DirectControlDispatcher;
 import org.nanosite.robotarm.common.IRobotArmDirectControl;
 import org.nanosite.robotarm.common.IRobotArmPosControl;
 import org.nanosite.robotarm.common.InverseKinematicsControl;
+import org.nanosite.robotarm.controller.ISSC32;
+import org.nanosite.robotarm.controller.ISerialConnection;
 import org.nanosite.robotarm.controller.RobotArmPhysical;
-import org.nanosite.robotarm.simulator.RobotArmSimulator;
+import org.nanosite.robotarm.controller.SSC32;
+import org.nanosite.robotarm.controller.SSC32Simu;
+import org.nanosite.robotarm.controller.SerialConnection;
 
 
 public class RobotArmApplication {
@@ -21,25 +24,33 @@ public class RobotArmApplication {
 
 		boolean verbose = true;
 		
-		boolean simulateOnly = true;
+		boolean simulateOnly = false;
 
-		DirectControlDispatcher dispatcher = new DirectControlDispatcher();
-		RobotArmSimulator simulator = new RobotArmSimulator();
-		dispatcher.addClient(simulator.init());
-		if (! simulateOnly) {
-			IRobotArmDirectControl robotPhys = RobotArmPhysical.createInstance("/dev/tty.usbserial-FTF7AJ8S", verbose);
+//		DirectControlDispatcher dispatcher = new DirectControlDispatcher();
+//		RobotArmSimulator simulator = new RobotArmSimulator();
+//		dispatcher.addClient(simulator.init());
+//		if (! simulateOnly) {
+			ISerialConnection serial = new SerialConnection("/dev/tty.usbserial-FTF7AJ8S");
+			if (! serial.open()) {
+				System.err.println("ERROR: serial connection could not be opened, aborting!");
+				return;
+			}
+			IRobotArmDirectControl robotPhys = createRobotArmPhysical(serial, verbose);
 			if (robotPhys==null) {
 				System.err.println("RobotArm couldn't be initialized, aborting.");
 				return;
 			}
-			dispatcher.addClient(robotPhys);
-		}
+//			dispatcher.addClient(robotPhys);
+//		}
+
 		
 		// create inverse-kinematics controller
-		IRobotArmPosControl robot = new InverseKinematicsControl(dispatcher, verbose);
+//		IRobotArmPosControl robot = new InverseKinematicsControl(dispatcher, verbose);
+		IRobotArmPosControl robot = new InverseKinematicsControl(robotPhys, verbose);
 		
 		// calibration procedure (set 0 for whole procedure or a number 1..6 for a single step)
-//		calibrate(0, dispatcher);
+//		calibrate(3, robotPhys);
+//		test1(robotPhys);
 		
 		robot.delay(2000);
 //		Calibrator ctrl = new Calibrator(robot);
@@ -51,9 +62,26 @@ public class RobotArmApplication {
 		ctrl.run();
 
 		robot.shutdown();
-		
+
 		System.out.println("RobotArmController finished.");
 	}
+
+	/**
+	 * Create a new instance of the RobotArmPhysical controller.
+	 * 
+	 * @param port the serial port or null (for low-level simulation)
+	 * @return the actual instance, or null on error
+	 */
+	public static RobotArmPhysical createRobotArmPhysical(ISerialConnection connection, boolean verbose) {
+		ISSC32 ssc32 = null;
+		if (connection==null) {
+			ssc32 = new SSC32Simu();
+		} else {
+			ssc32 = new SSC32(connection);
+		}
+		return new RobotArmPhysical(ssc32, new Calibration(), verbose);
+	}
+
 
 	private void calibrate(int step, IRobotArmDirectControl robotDirect) {
 		final int dt = 8000;
@@ -110,9 +138,9 @@ public class RobotArmApplication {
 		for(int i=45; i>=-45; i-=15) {
 			robotDirect.move(0, i, -i, -90, 0, 500);
 			robotDirect.delay(dt);
-		}	
+		}
 	}
-
+	
 	private void test2(IRobotArmDirectControl robotDirect) {
 		final int dt = 5000;
 
@@ -145,6 +173,6 @@ public class RobotArmApplication {
 			robotDirect.delay(dt);
 		}
 	}
-	
+
 }
 
