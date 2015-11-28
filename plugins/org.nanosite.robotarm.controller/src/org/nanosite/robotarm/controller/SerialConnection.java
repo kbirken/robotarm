@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-public class SerialConnection {
+public class SerialConnection implements ISerialConnection {
 	private String port;
 
 	private SerialPort serialPort = null;
@@ -25,6 +25,7 @@ public class SerialConnection {
 		this.port = port;
 	}
 
+	@Override
 	public boolean open() {
 		CommPortIdentifier portId = getSerialPortId(port);
 		if (portId==null) {
@@ -62,6 +63,7 @@ public class SerialConnection {
 	}
 
 
+	@Override
 	public void close() {
 		if (outputStream!=null) {
 			try {
@@ -79,6 +81,7 @@ public class SerialConnection {
 	}
 
 
+	@Override
 	public boolean send (String msg) {
 		if (outputStream!=null) {
 			String msg1 = msg + "\r";
