@@ -8,12 +8,14 @@ public class SSC32Simu implements ISSC32 {
 		System.out.println("SSC32: SIMULATION");
 	}
 
+	@Override
 	public void shutdown() {
 		reset();
 		
 		// no serial connection, we do not have to shutdown anything
 	}
 
+	@Override
 	public void delay(int millisec) {
 		try {
 			Thread.sleep(millisec);
@@ -22,6 +24,7 @@ public class SSC32Simu implements ISSC32 {
 		}
 	}
 
+	@Override
 	public boolean reset() {
 		int t = 1000;
 		delay(t);
@@ -30,6 +33,7 @@ public class SSC32Simu implements ISSC32 {
 		return true;
 	}
 
+	@Override
 	public boolean move (int ch0, int ch1, int ch2, int ch3, int ch5, int t) {
 		String cmd = "0=" + ch0 + " 1=" + ch1 + " 2=" + ch2 + " 3=" + ch3 + " R=" + ch5 + " T=" + t;
 		System.out.println("SSC32: MOVE " + cmd + "\n");
@@ -37,7 +41,8 @@ public class SSC32Simu implements ISSC32 {
 		return true;
 	}
 
-	public boolean grip (int ch) {
+	@Override
+	public boolean grab (int ch) {
 		String cmd = "4=" + ch;
 		System.out.println("SSC32: MOVE " + cmd + "\n");
 		return true;
