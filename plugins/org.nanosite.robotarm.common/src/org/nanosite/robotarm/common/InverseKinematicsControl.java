@@ -60,69 +60,18 @@ public class InverseKinematicsControl implements IRobotArmPosControl {
 	 * @return true if successful, false on error
 	 */
 	private boolean ik (double x, double y, double z, double aa, double rot, int t) {
-		// robot arm geometry
-		double s1 = GeometryAL5D.HUMERUS_LENGTH;
-		double s2 = GeometryAL5D.ULNA_LENGTH;
-		double s3 = GeometryAL5D.HAND_LENGTH;
-
-		if (verbose)
-				System.out.println("ik(x=" + x + ", y=" + y + ", z=" + z + ", aa=" + aa + ", rot=" + rot + ")");
-
-		// turn base into xy-plane
-		double a = toDegrees(atan2(y, x));
-		double x2 = sqrt(x*x + y*y);
-		if (verbose)
-			System.out.println("x=" + x + ", y=" + y + ", atan(x/y)=" + a + ", x2=" + x2);
-
-		double xHand = s3 * cos(toRadians(aa));
-		double zHand = s3 * sin(toRadians(aa));
-		if (verbose) {
-			logNumber("xHand", xHand);
-			logNumber("zHand", zHand);
-		}
-		double x1 = x2 - xHand;
-		double zrel = (z + zHand) - GeometryAL5D.BASE_HEIGHT;
-		if (verbose) {
-			logNumber("x1", x1);
-			logNumber("zrel", zrel);
-		}
-		
-		// compute b and c inside xy-plane
-		double sw = sqrt(x1*x1 + zrel*zrel);
-		if (verbose) {
-			logNumber("sw", sw);
-		}
-
-		// b1: angle SW->ground
-		double b1 = toDegrees(atan2(zrel, x1));
-		
-		// b2: angle humerus->SW
-		double b2 = toDegrees(acos((s1*s1 + sw*sw - s2*s2) / (2*s1*sw)));
-		
-		double b = b1+b2-90;
-		double c = toDegrees(acos((s1*s1 + s2*s2 - sw*sw) / (2*s1*s2))) - 90;
-		double d = (-aa) - (b+c);
-		if (verbose) {
-			logNumber("b1", b1);
-			logNumber("b2", b2);
-			logNumber("b", b);
-			logNumber("c", c);
-			logNumber("d", d);
-		}
-
-		if (Double.isNaN(a) || Double.isNaN(b) || Double.isNaN(c)
-				|| Double.isNaN(d) || Double.isNaN(rot)) {
+		InverseKinematics ik = new InverseKinematics(x, y, z, aa, verbose);
+		if (! ik.isValid()) {
 			System.err.println("ERROR: invalid movement!");
 			return false;
-		} else {
-			return base.move(a, b, c, d, rot, t);
 		}
-	}
+		
+		if (Double.isNaN(rot)) {
+			System.err.println("ERROR: invalid wrist rotation!");
+			return false;
+		}
 
-	
-	private void logNumber(String name, double value) {
-		System.out.format("%s = %5.1f\n", name, value);
+		return base.move(ik.getA(), ik.getB(), ik.getC(), ik.getD(), rot, t);
 	}
-				
 				
 }
